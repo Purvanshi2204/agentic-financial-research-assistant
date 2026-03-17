@@ -1,0 +1,7 @@
+fastapi
+langgraph
+openai
+streamlit
+yfinance
+newsapi-python
+python-dotenv
