@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d8108dab-c12b-459c-9ee0-ae7b6bb121fb" name="Changes" comment="Initial project setup and repository structure">
-      <change afterPath="$PROJECT_DIR$/Backend/agents/sentiment_agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/agents/market_data_agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/agents/news_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/agents/news_fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/api/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/pdf_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/api/pdf_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workflows/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/workflows/graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +43,11 @@
     "git-widget-placeholder": "main"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Backend" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
