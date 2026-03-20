@@ -5,3 +5,6 @@ streamlit
 yfinance
 newsapi-python
 python-dotenv
+uvicorn
+reportlab
+langchain-openai
