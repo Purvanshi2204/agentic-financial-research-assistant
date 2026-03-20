@@ -128,9 +128,10 @@ def get_mock(company):
         "report_text":f"Mock analysis for {company}. Connect the FastAPI backend for real AI-generated data."
     })
 
-def fetch_data(company):
+def fetch_data(company, ticker=""):
     try:
-        r = requests.get("http://localhost:8000/analyze", params={"company":company}, timeout=5)
+        r = requests.get("http://localhost:8000/analyze",
+                         params={"company": company, "ticker": ticker}, timeout=5)
         if r.status_code == 200:
             return r.json(), False
     except Exception:
@@ -219,18 +220,24 @@ if mode == "Single Company":
         """, unsafe_allow_html=True)
 
     # ── Search row ───────────────────────────────────────
-    col_in, col_btn = st.columns([4, 1])
+    col_in, col_tick, col_btn = st.columns([3, 1.2, 1])
     with col_in:
-        company = st.text_input("", placeholder="🔍  Type company name here — e.g. Apple, Tesla, Google, Microsoft...", label_visibility="collapsed")
+        company = st.text_input("Company Name",
+                                placeholder="🔍  Company name — Apple, Tesla...",
+                                label_visibility="collapsed")
+    with col_tick:
+        ticker = st.text_input("Ticker Symbol",
+                               placeholder="AAPL (optional)",
+                               label_visibility="collapsed")
     with col_btn:
         run = st.button("Analyze →", type="primary")
 
-    st.caption("💡 Try: Apple · Microsoft · Tesla · Google · Amazon")
+    st.caption("💡 Try: Apple / AAPL · Microsoft / MSFT · Tesla / TSLA · Google / GOOGL")
 
     if run and company.strip():
         with st.spinner(f"🤖 All 4 agents are analyzing {company}..."):
             time.sleep(0.8)
-            data, is_mock = fetch_data(company)
+            data, is_mock = fetch_data(company, ticker)
         st.session_state["data"]    = data
         st.session_state["is_mock"] = is_mock
     elif run and not company.strip():
