@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d8108dab-c12b-459c-9ee0-ae7b6bb121fb" name="Changes" comment="Initial project setup and repository structure">
-      <change afterPath="$PROJECT_DIR$/Backend/agents/market_data_agent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/agents/report_writer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
