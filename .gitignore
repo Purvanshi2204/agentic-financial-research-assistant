@@ -1,5 +1,5 @@
 .venv/
 .idea/
 __pycache__/
-.env
-utils/news_cache/
+Backend/.env
+Backend/utils/news_cache/
