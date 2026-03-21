@@ -1,11 +1,14 @@
 import os
 import json
+import time
 from newsapi import NewsApiClient
 from dotenv import load_dotenv
 
 load_dotenv()
 
-CACHE_DIR = "utils/news_cache"
+CACHE_DIR          = "utils/news_cache"
+CACHE_EXPIRY_HOURS = 12      # cache expires after 12 hours → fresh data fetched
+
 
 def _cache_path(company: str) -> str:
     """Returns the file path for a company's cached news."""
@@ -13,14 +16,25 @@ def _cache_path(company: str) -> str:
     safe_name = company.lower().replace(" ", "_")
     return f"{CACHE_DIR}/{safe_name}.json"
 
-def _load_from_cache(company: str) -> list | None:
-    """Load articles from cache if it exists."""
+
+def _is_cache_valid(company: str) -> bool:
+    """Check if cache file exists AND is less than 12 hours old."""
     path = _cache_path(company)
-    if os.path.exists(path):
-        with open(path, "r") as f:
-            print(f"[NewsFetcher] Loaded '{company}' articles from cache (no API call made)")
-            return json.load(f)
-    return None
+    if not os.path.exists(path):
+        return False
+    file_age_hours = (time.time() - os.path.getmtime(path)) / 3600
+    return file_age_hours < CACHE_EXPIRY_HOURS
+
+
+def _load_from_cache(company: str) -> list | None:
+    """Load articles from cache only if cache is still valid."""
+    if not _is_cache_valid(company):
+        print(f"[NewsFetcher] Cache expired for '{company}' → fetching fresh data")
+        return None
+    with open(_cache_path(company), "r") as f:
+        print(f"[NewsFetcher] Loaded '{company}' articles from cache (valid, no API call)")
+        return json.load(f)
+
 
 def _save_to_cache(company: str, articles: list):
     """Save fetched articles to cache."""
@@ -29,6 +43,7 @@ def _save_to_cache(company: str, articles: list):
         json.dump(articles, f, indent=2)
     print(f"[NewsFetcher] Saved {len(articles)} articles to cache → {path}")
 
+
 def news_fetcher_agent(state: dict, use_cache: bool = True) -> dict:
     """
     Agent 1 — News Fetcher
@@ -36,16 +51,16 @@ def news_fetcher_agent(state: dict, use_cache: bool = True) -> dict:
     Receives: state with 'company' and optional 'ticker' keys
     Returns: state updated with 'articles' key
 
-    use_cache=True  → loads from file if available (saves API requests)
+    use_cache=True  → loads from file if valid (< 12 hours old)
     use_cache=False → always hits the real NewsAPI (use for final demo)
     """
     company = state.get("company", "")
-    ticker  = state.get("ticker", "")      # e.g. "AAPL", "MSFT", "GOOGL"
+    ticker  = state.get("ticker", "")
 
     if not company:
         return {**state, "articles": [], "error": "No company name provided."}
 
-    # ── Try cache first ──────────────────────────────────────────────────────
+    # ── Try cache first (only if valid) ─────────────────────────────────────
     if use_cache:
         cached = _load_from_cache(company)
         if cached:
@@ -65,7 +80,7 @@ def news_fetcher_agent(state: dict, use_cache: bool = True) -> dict:
         response = newsapi.get_everything(
             q=query,
             language="en",
-            sort_by="relevancy",       # relevancy works better than publishedAt
+            sort_by="relevancy",
             page_size=50,
         )
 
@@ -85,7 +100,7 @@ def news_fetcher_agent(state: dict, use_cache: bool = True) -> dict:
 
         print(f"[NewsFetcher] Fetched {len(cleaned)} articles for '{company}' from API")
 
-        # Save to cache so next run doesn't use an API call
+        # Save fresh data to cache
         _save_to_cache(company, cleaned)
 
         return {**state, "articles": cleaned}
@@ -99,8 +114,6 @@ def news_fetcher_agent(state: dict, use_cache: bool = True) -> dict:
 if __name__ == "__main__":
     test_state = {"company": "Apple", "ticker": "AAPL"}
 
-    # First run  → hits API, saves to cache
-    # Second run → loads from cache, no API call
     result = news_fetcher_agent(test_state, use_cache=True)
 
     print(f"\nTotal articles fetched: {len(result['articles'])}")
@@ -111,5 +124,5 @@ if __name__ == "__main__":
         print(f"Date   : {article['published_at']}")
         print(f"URL    : {article['url']}")
 
-    # ── To force a fresh API call (e.g. for final demo), run this instead: ──
+    # ── To force a fresh API call regardless of cache age ──
     # result = news_fetcher_agent(test_state, use_cache=False)
