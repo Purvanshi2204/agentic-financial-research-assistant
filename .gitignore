@@ -1,5 +1,9 @@
 .venv/
 .idea/
 __pycache__/
+.env
 Backend/.env
+utils/news_cache/
 Backend/utils/news_cache/
+test_output/
+*.pyc

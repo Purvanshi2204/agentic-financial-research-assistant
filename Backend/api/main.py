@@ -228,4 +228,4 @@ def compare(companies: list[dict]):
 
 # ── Run server ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    uvicorn.run("Backend.api.main:app", host="0.0.0.0", port=8000, reload=True):
+    uvicorn.run("Backend.api.main:app", host="0.0.0.0", port=8000, reload=True)
