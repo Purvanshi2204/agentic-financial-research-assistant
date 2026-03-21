@@ -1,20 +1,42 @@
+import os
 import yfinance as yf
 from dotenv import load_dotenv
 
 load_dotenv()
 
+
+def _auto_detect_ticker(company: str) -> str | None:
+    """Auto-detect ticker symbol from company name using yfinance Search."""
+    try:
+        results = yf.Search(company).quotes
+        if results:
+            ticker = results[0]["symbol"]
+            print(f"[MarketDataAgent] Auto-detected ticker: {ticker} for '{company}'")
+            return ticker
+    except Exception as e:
+        print(f"[MarketDataAgent] Could not auto-detect ticker: {e}")
+    return None
+
+
 def market_data_agent(state: dict) -> dict:
     """
     Agent 3 — Market Data
     Fetches real-time stock price and financial info using yfinance.
-    Receives: state with 'ticker' key
+    Receives: state with 'ticker' key (optional — auto-detected if missing)
     Returns: state updated with 'market_data' key
     """
     ticker  = state.get("ticker", "")
     company = state.get("company", "")
 
+    # ── Auto-detect ticker if not provided ───────────────────────────────────
     if not ticker:
-        return {**state, "market_data": {}, "error": "No ticker symbol provided."}
+        ticker = _auto_detect_ticker(company)
+        if not ticker:
+            return {
+                **state,
+                "market_data": {},
+                "error": f"Could not find ticker for '{company}'. Please provide it manually."
+            }
 
     print(f"[MarketDataAgent] Fetching market data for '{ticker}'...")
 
@@ -85,18 +107,24 @@ def market_data_agent(state: dict) -> dict:
         print(f"  Revenue         : {fmt(market_data['revenue'])}")
         print(f"  Recommendation  : {market_data['recommendation']}")
 
-        return {**state, "market_data": market_data}
+        # Update state ticker in case it was auto-detected
+        return {**state, "ticker": ticker, "market_data": market_data}
 
     except Exception as e:
         print(f"[MarketDataAgent] Error fetching data: {e}")
         return {**state, "market_data": {}, "error": str(e)}
 
 
-# ── Quick test ───────────────────────────────────────────────────────────────
+# ── Quick test ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    test_state = {"company": "Apple", "ticker": "AAPL"}
-    result = market_data_agent(test_state)
+    # Test 1 — with ticker provided
+    print("=== Test 1: With ticker ===")
+    result = market_data_agent({"company": "Apple", "ticker": "AAPL"})
+    print(f"Price: ${result['market_data'].get('current_price')}")
 
-    print("\n========== MARKET DATA RESULTS ==========")
-    for key, value in result["market_data"].items():
-        print(f"{key:<25}: {value}")
+    # Test 2 — without ticker (auto-detect)
+    print("\n=== Test 2: Without ticker (auto-detect) ===")
+    result = market_data_agent({"company": "JP Morgan", "ticker": ""})
+    print(f"Auto ticker : {result.get('ticker')}")
+    print(f"Price       : ${result['market_data'].get('current_price')}")
+    print(f"Company     : {result['market_data'].get('company_name')}")
