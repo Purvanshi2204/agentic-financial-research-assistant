@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8108dab-c12b-459c-9ee0-ae7b6bb121fb" name="Changes" comment="Initial project setup and repository structure">
-      <change afterPath="$PROJECT_DIR$/Backend/agents/report_writer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="d8108dab-c12b-459c-9ee0-ae7b6bb121fb" name="Changes" comment="Initial project setup and repository structure" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
